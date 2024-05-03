@@ -1,6 +1,9 @@
-from ._lmao import LMAO
+from lmao import preprocessing, topicModel, graph, classifier
 __version__ = "0.1.0"
 
 __all__ = [
-    "LMAO",
+    "preprocessing",
+    "topicModel",
+    "graph",
+    "classifier"
 ]
