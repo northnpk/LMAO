@@ -82,6 +82,8 @@ def get_df(csv_path:str, label_path:str, eor_path:str):
     print('Getting Crashed from EOR')
     df['crash'] = ['crashed' if eor in crashed else 'not crashed' for eor in df['EOR'].to_list()]
     
+    df = df.reset_index(drop=True)
+    
     print('Returning dataframe')
     return pd.DataFrame({'session_id':df['RunID'],
                          'severity':df['Severity'],

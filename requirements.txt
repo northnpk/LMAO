@@ -5,3 +5,5 @@ bertopic
 logparser3
 pyarrow
 fastparquet
+networkx
+plotly

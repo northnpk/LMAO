@@ -46,6 +46,8 @@ def get_df(path:str, label_path:str):
     print('Join the dataframe with labels')
     hdfs_df = hdfs_df.join(label_df.set_index('BlockId'), on='BlockId')
     
+    df = df.reset_index(drop=True)
+    
     print('Returning dataframe')
     return pd.DataFrame({'session_id':hdfs_df['BlockId'], 
                          'severity':hdfs_df['Level'],
