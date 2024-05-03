@@ -1,9 +1,9 @@
-from lmao import preprocessing, topicModel, graph, classifier
+from lmao import preprocessing, topicmodel, graph, classifier
 __version__ = "0.1.0"
 
 __all__ = [
     "preprocessing",
-    "topicModel",
+    "topicmodel",
     "graph",
     "classifier"
 ]

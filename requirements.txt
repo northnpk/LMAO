@@ -3,3 +3,5 @@ torchvision
 torchaudio
 bertopic
 logparser3
+pyarrow
+fastparquet

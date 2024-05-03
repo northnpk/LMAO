@@ -23,6 +23,7 @@ class HDFS:
         print('Done')
         output_file = output_dir+log_file+'_structured.csv'
         return output_file
+    
 def get_BlockId(ParameterList):
     for s in ParameterList:
         sub = s.split(' ')
@@ -33,11 +34,19 @@ def get_BlockId(ParameterList):
 
 def get_df(path:str, label_path:str):
     hdfs_df = pd.read_csv(path)
-    hdfs_df['ParameterList'] = hdfs_df['ParameterList'].apply(literal_eval)
-    hdfs_df['BlockId'] = hdfs_df['ParameterList'].apply(get_BlockId)
+    
+    print('literal_eval process...')
+    hdfs_df['ParameterList'] = hdfs_df['ParameterList'].progress_apply(literal_eval)
+    
+    print('Getting BlockId process...')
+    hdfs_df['BlockId'] = hdfs_df['ParameterList'].progress_apply(get_BlockId)
     hdfs_df = hdfs_df.dropna(subset='BlockId')
     label_df = pd.read_csv(label_path)
+    
+    print('Join the dataframe with labels')
     hdfs_df = hdfs_df.join(label_df.set_index('BlockId'), on='BlockId')
+    
+    print('Returning dataframe')
     return pd.DataFrame({'session_id':hdfs_df['BlockId'], 
                          'severity':hdfs_df['Level'],
                          'content':hdfs_df['Content'],
