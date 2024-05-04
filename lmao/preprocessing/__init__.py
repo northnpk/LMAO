@@ -8,7 +8,7 @@ class LMAOPreprocessing:
         self.parsing = parsing
         self.csv_path = None
         self.df = pd.DataFrame()
-        return print(self)
+        print('Created prep class')
         
     def log_parsing(self, input_dir, log_file, output_dir):
         if self.data_type == 'hdfs':

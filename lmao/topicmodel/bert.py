@@ -12,7 +12,7 @@ else :
 from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
 
-def save_embeddings(df:pd.DataFrame, data_col:str='content', save_path:str='/embeddings', bert_model_name:str='all-MiniLM-L6-v2', batch_size:int=1):
+def save_embeddings(df:pd.DataFrame, data_col:str='content', save_path:str=f'{current_dir}/embeddings', bert_model_name:str='all-MiniLM-L6-v2', batch_size:int=1):
     print('Start Embeddings')
     sentence_model = SentenceTransformer(bert_model_name)
     embeddings = sentence_model.encode(df[data_col].to_list(),
@@ -21,8 +21,19 @@ def save_embeddings(df:pd.DataFrame, data_col:str='content', save_path:str='/emb
     np.savez_compressed(save_path, embeddings=embeddings)
     gc.collect()
     return save_path+'.npz'
+
+def save_model(topic_model:BERTopic, path_to_save:str, embedding_model:str):
+    print(f'Saving BERT model with {embedding_model} embedding model')
+    topic_model.save(path_to_save, serialization="safetensors", save_ctfidf=True, save_embedding_model=embedding_model)
     
-def update_model(df:pd.DataFrame, data_col:str, batch_size = 100000, embeddings_load=None):
+def load_model(path_to_load:str, embedding_model_name:str='all-MiniLM-L6-v2'):
+    # Define embedding model
+    embedding_model = SentenceTransformer(embedding_model_name)
+    # Load model and add embedding model
+    return BERTopic.load(path_to_load, embedding_model=embedding_model)
+
+    
+def update_model(df:pd.DataFrame, data_col:str, batch_size = 25000, embeddings_load=None):
 
     #data preparation
     if embeddings_load:
@@ -30,7 +41,7 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 100000, embeddings_
         embeddings = np.load(embeddings_load)['embeddings']
     else :
         save_embeddings(df)
-        embeddings = np.load('/embeddings')['embeddings']
+        embeddings = np.load(f'{current_dir}/embeddings')['embeddings']
 
     batch = len(df) // batch_size
 
