@@ -1,6 +1,6 @@
 from .._utils import *
 import torch
-
+import gc
 
 if torch.cuda.is_available():
     from cuml.cluster import HDBSCAN
@@ -19,6 +19,7 @@ def save_embeddings(df:pd.DataFrame, data_col:str='content', save_path:str='/emb
                                        show_progress_bar=True,
                                        batch_size=batch_size)
     np.savez_compressed(save_path, embeddings=embeddings)
+    gc.collect()
     return save_path+'.npz'
     
 def update_model(df:pd.DataFrame, data_col:str, batch_size = 100000, embeddings_load=None):
@@ -59,12 +60,13 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 100000, embeddings_
 
             # Update the base model
             base_model = updated_model
+            gc.collect()
 
     rest_start = (batch)*batch_size
     print(f'started from {rest_start} to {len(df)} amount:{len(df[rest_start:])} docs')
     new_model = BERTopic(umap_model=umap_model, hdbscan_model=hdbscan_model).fit(df[rest_start:][data_col].tolist(), embeddings[rest_start:])
     updated_model = BERTopic.merge_models([base_model, new_model])
-    
+    gc.collect()
     # Let's print the newly discover topics
     # nr_new_topics = len(set(updated_model.topics_)) - len(set(base_model.topics_))
     # new_topics = list(updated_model.topic_labels_.values())[-nr_new_topics:]
@@ -73,4 +75,5 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 100000, embeddings_
     
     print('Updating topics with n_gram_range=(1, 2)')
     updated_model.update_topics(df.Content.tolist(), n_gram_range=(1, 2))
+    gc.collect()
     return updated_model
