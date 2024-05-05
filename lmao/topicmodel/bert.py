@@ -46,12 +46,12 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 25000, embeddings_l
     batch = len(df) // batch_size
 
     print('Start create a models')
-    umap_model = UMAP(n_components=5, n_neighbors=15, min_dist=0.0)
-    hdbscan_model = HDBSCAN(min_samples=10, gen_min_span_tree=True)
 
     base_model = BERTopic(umap_model=umap_model, hdbscan_model=hdbscan_model)
 
     for i in tqdm(range(batch)):
+        umap_model = UMAP(n_components=5, n_neighbors=15, min_dist=0.0)
+        hdbscan_model = HDBSCAN(min_samples=10, gen_min_span_tree=True)
         start = i*batch_size
         stop = (i+1)*batch_size
         print('')
@@ -75,6 +75,8 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 25000, embeddings_l
 
     rest_start = (batch)*batch_size
     print(f'started from {rest_start} to {len(df)} amount:{len(df[rest_start:])} docs')
+    umap_model = UMAP(n_components=5, n_neighbors=15, min_dist=0.0)
+    hdbscan_model = HDBSCAN(min_samples=10, gen_min_span_tree=True)
     new_model = BERTopic(umap_model=umap_model, hdbscan_model=hdbscan_model).fit(df[rest_start:][data_col].tolist(), embeddings[rest_start:])
     updated_model = BERTopic.merge_models([base_model, new_model])
     gc.collect()
