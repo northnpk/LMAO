@@ -158,3 +158,11 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# dataset
+dataset/
+
+# models dir
+lmao/topicmodel/model/BERTopic-ALICE_info_no_severity_D-all-MiniLM-L6-v2
+lmao/topicmodel/model/BERTopic-BGL-all-MiniLM-L6-v2
+lmao/topicmodel/model/BERTopic-HDFS-all-MiniLM-L6-v2
