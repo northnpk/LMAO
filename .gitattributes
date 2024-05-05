@@ -1,0 +1,4 @@
+ctfidf_config.json filter=lfs diff=lfs merge=lfs -text
+*ctfidf_config.json filter=lfs diff=lfs merge=lfs -text
+*/ctfidf_config.json filter=lfs diff=lfs merge=lfs -text
+*/ctfidf.safetensors filter=lfs diff=lfs merge=lfs -text
