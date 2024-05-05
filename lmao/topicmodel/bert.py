@@ -47,7 +47,7 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 25000, embeddings_l
 
     print('Start create a models')
 
-    base_model = BERTopic(umap_model=umap_model, hdbscan_model=hdbscan_model)
+    base_model = BERTopic()
 
     for i in tqdm(range(batch)):
         umap_model = UMAP(n_components=5, n_neighbors=15, min_dist=0.0)
