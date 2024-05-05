@@ -26,9 +26,9 @@ class LMAOTopic:
         else :
             print(f'We do not have the {self.mode} mode yet.')
     
-    def from_trained_model(self, model_path:str):
+    def from_trained_model(self, model_path:str, embedding_model_name:str="all-MiniLM-L6-v2"):
         if self.mode == 'BERTopic':
-            self.model = bert.load_model(path_to_load=model_path, embedding_model_name="all-MiniLM-L6-v2")
+            self.model = bert.load_model(path_to_load=model_path, embedding_model_name=embedding_model_name)
             print('Done')
         else :
             print(f'We do not have the {self.mode} mode yet.')

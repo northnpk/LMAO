@@ -87,6 +87,6 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 25000, embeddings_l
     # print(f"{new_topics}\n")
     
     print('Updating topics with n_gram_range=(1, 2)')
-    updated_model.update_topics(df.Content.tolist(), n_gram_range=(1, 2))
+    updated_model.update_topics(df[data_col].tolist(), n_gram_range=(1, 2))
     gc.collect()
     return updated_model
