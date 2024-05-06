@@ -18,7 +18,7 @@ class Graph:
             print('Getting Group by from dataframe')
             self.df = group_to_classify(df=df, group_name=group_name,
                                     X_col=X_col, y_col=y_col)
-            self.seq_size = self.df['X'].apply(len).max
+            self.seq_size = self.df['X'].apply(len).max()
             print(f'Max sequence size of this dataframe is : {self.seq_size}')
 
             if padding :
@@ -60,8 +60,8 @@ class Graph:
         print('Getting PyG Loader Graph from dataframe')
         return getting_loader(df=self.df, group_node_attrs=group_node_attrs,
                               batch_size=batch_size, len_seq=self.seq_size)
-    def get_one_graph(self, i):
-        return get_graph(seq=self.df['X'][i], len_seq=self.seq_size)
+    def get_one_graph(self, i, no_feature:bool=False):
+        return get_graph(seq=self.df['X'][i], len_seq=self.seq_size, no_feature=no_feature)
         
     
 def group_to_classify(df:pd.DataFrame,

@@ -12,6 +12,8 @@ else :
 from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
 
+from sklearn.preprocessing import MinMaxScaler
+
 def save_embeddings(df:pd.DataFrame, data_col:str='content', save_path:str=f'{current_dir}/embeddings', bert_model_name:str='all-MiniLM-L6-v2', batch_size:int=1):
     print('Start Embeddings')
     sentence_model = SentenceTransformer(bert_model_name)
@@ -90,3 +92,21 @@ def update_model(df:pd.DataFrame, data_col:str, batch_size = 25000, embeddings_l
     updated_model.update_topics(df[data_col].tolist(), n_gram_range=(1, 2))
     gc.collect()
     return updated_model
+
+def get_coor_topic(topic_model):
+    if topic_model.mode == 'BERTopic':
+        print('Stating get coordinates of each topic')
+        all_topics = sorted(list(topic_model.model.get_topics().keys()))
+        freq_df = topic_model.model.get_topic_freq()
+        freq_df = freq_df.loc[freq_df.Topic != -1, :]
+        topics = sorted(freq_df.Topic.to_list())
+        indices = np.array([all_topics.index(topic) for topic in topics])
+        embeddings = topic_model.model.c_tf_idf_.toarray()[indices]
+        print('Warning: This may take a lot of time.')
+        embeddings = MinMaxScaler().fit_transform(embeddings)
+        embeddings = UMAP(n_neighbors=2, n_components=2, metric='hellinger', random_state=42).fit_transform(embeddings)
+        coor = { k:v for (k,v) in zip(topics, embeddings)}
+        return coor
+    else :
+        print(f'We do not have the {topic_model.mode} mode yet.')
+        return None

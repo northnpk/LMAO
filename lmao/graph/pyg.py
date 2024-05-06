@@ -22,7 +22,7 @@ def pos_onehot(seq, keys, len_seq):
             a[i][p] = 1
     return a
 
-def get_graph(seq, len_seq:int=300):
+def get_graph(seq, len_seq:int=300, no_feature:bool=False):
     edge_list=[]
     data_size = len(seq)
     # for idx, node in tqdm(enumerate(seq), total=data_size):
@@ -33,8 +33,11 @@ def get_graph(seq, len_seq:int=300):
     nodes = list(c.keys())
     # print(nodes)
     data = np.array(list(c.items()))
-    pos = pos_onehot(seq, nodes, len_seq)
-    x = np.hstack([data, pos])
+    if no_feature:
+        x = data
+    elif no_feature == False:
+        pos = pos_onehot(seq, nodes, len_seq)
+        x = np.hstack([data, pos])
     # print(x)
     node_list = []
     for node, features in zip(nodes, x):
