@@ -12,17 +12,25 @@ class Graph:
         self.graph_list = []
         self.mode = mode
         self.n_topics = len(df['topic'].unique())
+        self.seq_size = None
         print(f'Topics size of this dataframe is : {self.n_topics}')
-        if self.mode == 'seq':
+        if self.mode in ['seq','pyg']:
             print('Getting Group by from dataframe')
             self.df = group_to_classify(df=df, group_name=group_name,
                                     X_col=X_col, y_col=y_col)
+            self.seq_size = self.df['X'].apply(len).max
+            print(f'Max sequence size of this dataframe is : {self.seq_size}')
+
             if padding :
                 print(f'Apply Padding and Truncate {seq_size}.')
                 self.df['X'] = self.df['X'].progress_apply(pad_truncate, max_len=seq_size)
                 self.seq_size = seq_size
                 self.n_topics = len(df['topic'].unique()) + 1 # Adding Pad (-2) to the topic input
                 print(f'Updating Topic size of this dataframe to {self.n_topics}')
+                print(f'Updating sequence size of this dataframe to {self.seq_size}')
+
+            if self.mode == 'pyg':
+                print('Please call .get_PyG() to get PyG dataloader')
         
         elif self.mode == 'freq':
             print('Getting Group by from dataframe')
@@ -30,25 +38,13 @@ class Graph:
                                     X_col=X_col, y_col=y_col)
             
             print('Apply Count to calculate each topic frequency')
-            self.df['X'] = self.df['X'].progress_apply(get_freq, n_topics=2200)
-            
-        elif self.mode == 'pyg':
-            print('Getting Group by from dataframe')
-            self.df = group_to_classify(df=df, group_name=group_name,
-                                    X_col=X_col, y_col=y_col)
-            if padding :
-                print(f'Apply Padding and Truncate {seq_size}.')
-                self.df['X'] = self.df['X'].progress_apply(pad_truncate, max_len=seq_size)
-                self.seq_size = seq_size
-                self.n_topics = len(df['topic'].unique()) + 1 # Adding Pad (-2) to the topic input
-                print(f'Updating Topic size of this dataframe to {self.n_topics}')
-            print('Please call .get_PyG() to get PyG dataloader')
+            self.df['X'] = self.df['X'].progress_apply(get_freq, n_topics=self.n_topics)
             
         else :
             print(f'We do not have the {mode} mode yet.')
             self.df = df
             
-    def get_networkx(self, one_hot:bool=False):
+    def get_networkx_list(self, one_hot:bool=False):
         n_features = 2
         if one_hot:
             n_features+=self.seq_size
@@ -64,6 +60,8 @@ class Graph:
         print('Getting PyG Loader Graph from dataframe')
         return getting_loader(df=self.df, group_node_attrs=group_node_attrs,
                               batch_size=batch_size, len_seq=self.seq_size)
+    def get_one_graph(self, i):
+        return get_graph(seq=self.df['X'][i], len_seq=self.seq_size)
         
     
 def group_to_classify(df:pd.DataFrame,
