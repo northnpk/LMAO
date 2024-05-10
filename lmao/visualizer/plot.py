@@ -1,9 +1,10 @@
 from .._utils import *
 import plotly.graph_objects as go
 import networkx as nx
+from sklearn.preprocessing import normalize
 
 def normalized(a):
-    return [float(i)/max(a) for i in a]
+    return normalize([a])[0]
 
 def plotly_digraph(G, label:str='Label', topic_dict:dict=None):
     
@@ -45,7 +46,7 @@ def plotly_digraph(G, label:str='Label', topic_dict:dict=None):
     edgewidth[-1] = 1
     fakesize = nodesize
     
-    nodesize = [s*50 for s in normalized(nodesize)]
+    nodesize = [s*100 for s in normalized(nodesize)]
     # edgewidth = [w for w in normalized(edgewidth)]
     
     #create a trace for the edges
@@ -54,7 +55,7 @@ def plotly_digraph(G, label:str='Label', topic_dict:dict=None):
         y=edge_y,
         opacity=0.7,
         mode="lines+markers",
-        marker=dict(color=edgewidth, 
+        marker=dict(color=edgewidth,
                     size=10,
                     opacity=0.7,
                     symbol= "arrow-bar-up", 
@@ -89,5 +90,15 @@ def plotly_digraph(G, label:str='Label', topic_dict:dict=None):
 
     data = [trace_edges, trace_nodes]
     fig = go.Figure(data=data)
-    fig.update_layout(margin=dict(l=0, r=0, b=0, t=0), showlegend=False)
+    fig.update_layout( 
+                      showlegend=False,
+                      title_text=f'<b>Graph of log from y : "{label}"</b>',
+                      title_x=0.5,
+                      width=640,
+                      height=480,
+                      plot_bgcolor='rgba(0, 0, 0, 0)',
+                      paper_bgcolor='rgba(0, 0, 0, 0)',
+                      )
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
     return fig
