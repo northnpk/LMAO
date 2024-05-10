@@ -1,9 +1,9 @@
 from .._utils import *
 from ..preprocessing import hdfs, alice_info
 
-class LMAOPreprocessing:
+class LMAOPrep:
     def __init__(self, data_type='hdfs', parsing=True):
-        super(LMAOPreprocessing, self).__init__()
+        super().__init__()
         self.data_type = data_type
         self.parsing = parsing
         self.csv_path = None

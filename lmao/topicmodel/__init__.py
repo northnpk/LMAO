@@ -4,6 +4,7 @@ from ..topicmodel import bert
 
 class LMAOTopic:
     def __init__(self, mode='BERTopic'):
+        super().__init__()
         self.model = None
         self.mode = mode
         self.df = pd.DataFrame()

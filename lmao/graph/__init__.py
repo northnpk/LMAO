@@ -4,12 +4,13 @@ import plotly.express as px
 from collections import Counter
 from .pyg import getting_loader, get_graph
 
-class Graph:
+class LMAOgraph:
     def __init__(self, df:pd.DataFrame,
                  group_name:str='session_id',
                  X_col:str='topic', y_col:str='label',
                  mode:str='seq', padding:bool=True, seq_size:int=300,
                  including_ref:bool=False) -> pd.DataFrame:
+        super().__init__()
         self.graph_list = []
         self.mode = mode
         self.n_topics = len(df['topic'].unique())
