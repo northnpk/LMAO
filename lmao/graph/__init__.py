@@ -3,8 +3,9 @@ import networkx as nx
 import plotly.express as px
 from collections import Counter
 from .pyg import getting_loader, get_graph
+from sklearn.model_selection import train_test_split
 
-class LMAOgraph:
+class LMAOGraph:
     def __init__(self, df:pd.DataFrame,
                  group_name:str='session_id',
                  X_col:str='topic', y_col:str='label',
@@ -57,17 +58,38 @@ class LMAOgraph:
         self.graph_list = self.df['X'].progress_apply(get_graph)
         return self.graph_list
     
-    def get_PyG(self, one_hot:bool=False, batch_size:int=32, embeddings_path=None):
+    def get_PyG(self, one_hot:bool=False, batch_size:int=32, embeddings=None):
         n_features = 2
-        if one_hot:
-            n_features+=self.seq_size
+        # if one_hot:
+        #     n_features+=self.seq_size
+        if embeddings:
+            n_features += embeddings.shape[1]
         group_node_attrs = list(map(lambda x: str(x), range(0, n_features)))
         print('Getting PyG Loader Graph from dataframe')
-        return getting_loader(df=self.df, group_node_attrs=group_node_attrs,
-                              batch_size=batch_size, len_seq=self.seq_size)
-        
+        return getting_loader(df=self.df[self.df['usage'=='train']],
+                              group_node_attrs=group_node_attrs,
+                              batch_size=batch_size, len_seq=self.seq_size), getting_loader(df=self.df[self.df['usage'=='test']],
+                                                                                            group_node_attrs=group_node_attrs,
+                                                                                            batch_size=batch_size, len_seq=self.seq_size)
+
     def get_one_graph(self, i, feature:bool=False):
         return get_graph(seq=self.df['X'][i], len_seq=self.seq_size, feature=feature)
+    
+    def train_test_split(self, test_size=0.2):
+        train_df, test_df = train_test_split(self.df, test_size=test_size, stratify=self.df.y)
+        train_df['usage'] = 'train'
+        test_df['usage'] = 'test'
+        self.df = pd.concat([train_df, test_df], ignore_index=True)
+        return self.df
+    
+    def get_embeddings(self, topic_model):
+        all_topics = sorted(list(topic_model.model.get_topics().keys()))
+        freq_df = topic_model.model.get_topic_freq()
+        freq_df = freq_df.loc[freq_df.Topic != -1, :]
+        topics = sorted(freq_df.Topic.to_list())
+        indices = np.array([all_topics.index(topic) for topic in topics])
+        embeddings = topic_model.model.topic_embeddings_[indices]
+        return embeddings
         
     
 def group_to_classify(df:pd.DataFrame,
