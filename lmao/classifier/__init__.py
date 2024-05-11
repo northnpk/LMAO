@@ -25,7 +25,7 @@ class LMAOClassifier:
         self.label = label_map[model_type]
         self.model_type = model_type
     
-    def fit(self, X, y, val_X:None, val_y:None):
+    def fit(self, X, y, val_X=None, val_y=None):
         self.model = fit_map[self.model_type](self.model,
                                               X=X, y=y,
                                               val_X=val_X, val_y=val_y)

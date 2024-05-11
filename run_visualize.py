@@ -62,6 +62,23 @@ tab_style = {
     }
 }
 
+big_graph_style = {'width': '98%', 
+               'display': 'inline-block',
+               'border-radius': '15px',
+               'box-shadow': '8px 8px 8px grey',
+               'background-color': '#f9f9f9',
+               'padding': '10px',
+               'margin-bottom': '10px',
+               'margin-left': '10px'}
+small_graph_style = {'width': '49%', 
+               'display': 'inline-block',
+               'border-radius': '15px',
+               'box-shadow': '8px 8px 8px grey',
+               'background-color': '#f9f9f9',
+               'padding': '10px',
+               'margin-bottom': '10px',
+               'margin-left': '10px'}
+
 # Define the layout of the app
 app.layout = html.Div([
     dbc.Container([
@@ -101,49 +118,19 @@ def update_tab(tab):
         return html.Div([
         html.Div([
             dcc.Graph(id='graph5', figure=fig5, responsive=True),
-        ], style={'width': '98%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '8px 8px 8px grey',
-                                 'background-color': '#f9f9f9',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'margin-left': '10px'}),
+        ], style=big_graph_style),
         html.Div([
             dcc.Graph(id='graph1', figure=fig1, responsive=True),
-        ], style={'width': '48%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '8px 8px 8px grey',
-                                 'background-color': '#f9f9f9',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'margin-left': '10px'}),
+        ], style=small_graph_style),
         html.Div([
             dcc.Graph(id='graph2', figure=fig2, responsive=True),
-        ], style={'width': '48%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '8px 8px 8px grey',
-                                 'background-color': '#f9f9f9',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'margin-left': '10px'}),
+        ], style=small_graph_style),
         html.Div([
             dcc.Graph(id='graph3', figure=fig3, responsive=True),
-        ], style={'width': '98%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '8px 8px 8px grey',
-                                 'background-color': '#f9f9f9',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'margin-left': '10px'}),
+        ], style=big_graph_style),
         html.Div([
             dcc.Graph(id='graph4', figure=fig4, responsive=True),
-        ], style={'width': '98%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '8px 8px 8px grey',
-                                 'background-color': '#f9f9f9',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'margin-left': '10px'})
+        ], style=big_graph_style)
     ])
         
     elif tab == 'hdfs':
@@ -152,16 +139,16 @@ def update_tab(tab):
         return html.Div([
         html.Div([
             dcc.Graph(id='graph5', figure=fig5, responsive=True),
-        ], style={'width': '100%', 'display': 'block'}),
+        ], style=big_graph_style),
         html.Div([
             dcc.Graph(id='graph1', figure=fig1, responsive=True),
-        ], style={'width': '50%', 'display': 'inline-block'}),
+        ], style=small_graph_style),
         html.Div([
             dcc.Graph(id='graph2', figure=fig2, responsive=True),
-        ], style={'width': '50%', 'display': 'inline-block'}),
+        ], style=small_graph_style),
         html.Div([
             dcc.Graph(id='graph3', figure=fig3, responsive=True),
-        ], style={'width': '100%', 'display': 'inline-block'})
+        ], style=big_graph_style)
     ])
 
 
