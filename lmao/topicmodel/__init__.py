@@ -59,4 +59,17 @@ class LMAOTopic:
             print(f'We do not have the {self.mode} mode yet.')
             return None
         
+    def get_embeddings(self):
+        if self.mode == 'BERTopic':
+            all_topics = sorted(list(self.model.get_topics().keys()))
+            freq_df = self.model.get_topic_freq()
+            freq_df = freq_df.loc[freq_df.Topic != -1, :]
+            topics = sorted(freq_df.Topic.to_list())
+            indices = np.array([all_topics.index(topic) for topic in topics])
+            return self.model.topic_embeddings_[indices]
+        else :
+            print(f'We do not have the {self.mode} mode yet.')
+            return None
+            
+        
         

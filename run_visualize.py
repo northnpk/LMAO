@@ -27,7 +27,7 @@ server = app.server
 def generate_stats_card (title, value, image_path):
     return html.Div(
         dbc.Card([
-            dbc.CardImg(src=image_path, top=True, style={'width': '50px','alignSelf': 'center'}),
+            # dbc.CardImg(src=image_path, top=True, style={'width': '50px','alignSelf': 'center'}),
             dbc.CardBody([
                 html.P(value, className="card-value", style={'margin': '0px','fontSize': '22px','fontWeight': 'bold'}),
                 html.H4(title, className="card-title", style={'margin': '0px','fontSize': '18px','fontWeight': 'bold'})
@@ -70,6 +70,7 @@ big_graph_style = {'width': '98%',
                'padding': '10px',
                'margin-bottom': '10px',
                'margin-left': '10px'}
+
 small_graph_style = {'width': '49%', 
                'display': 'inline-block',
                'border-radius': '15px',
@@ -83,7 +84,7 @@ small_graph_style = {'width': '49%',
 app.layout = html.Div([
     dbc.Container([
         dbc.Row([
-            dbc.Col(html.Img(src="/pic/assets/imdb.png",width=150), width=2),
+            # dbc.Col(html.Img(src="/pic/assets/imdb.png",width=150), width=2),
             dbc.Col(
                 dcc.Tabs(id='graph-tabs', value='alice', children=[
                     dcc.Tab(label='ALICE Infologger', value='alice',style=tab_style['idle'],selected_style=tab_style['active']),
@@ -92,12 +93,8 @@ app.layout = html.Div([
                 ], style={'marginTop': '15px', 'width':'600px','height':'50px'})
             ,width=6),
         ]),
-        dbc.Row([
-            dbc.Col(generate_stats_card("Rows",total_log,"/pic/assets/movie-icon.png"), width=3),
-            dbc.Col(generate_stats_card("Sessions", total_sessions,"/pic/assets/language-icon.svg"), width=3),
-            dbc.Col(generate_stats_card("Topics",total_topics,"/pic/assets/country-icon.png"), width=3),
-            dbc.Col(generate_stats_card("Normal:Anomaly",normal_anomaly_ratio,"/pic/assets/vote-icon.png"), width=3),
-        ],style={'marginBlock': '10px'}),
+        dcc.Loading([dbc.Row(id='constants')]
+                    ,type='default',color='#636efa'),
         dbc.Row([
             dcc.Loading([
                 html.Div(id='tabs-content')
@@ -105,6 +102,20 @@ app.layout = html.Div([
         ])
     ], style={'padding': '0px'})
 ],style={'backgroundColor': 'white', 'minHeight': '100vh'})
+
+@app.callback(
+    Output('constants', 'children'),
+    Input('graph-tabs', 'value')
+)
+def update_constant_block(tab):
+    get_constants = load_data(tab)
+    total_log, total_sessions, total_topics, normal_anomaly_ratio = get_constants()
+    return dbc.Row([
+        dbc.Col(generate_stats_card("Rows",total_log,"/pic/assets/movie-icon.png"), width=3),
+        dbc.Col(generate_stats_card("Sessions", total_sessions,"/pic/assets/language-icon.svg"), width=3),
+        dbc.Col(generate_stats_card("Topics",total_topics,"/pic/assets/country-icon.png"), width=3),
+        dbc.Col(generate_stats_card("Normal:Anomaly",normal_anomaly_ratio,"/pic/assets/vote-icon.png"), width=3),
+        ],style={'marginBlock': '10px'})
 
 @app.callback(
     Output('tabs-content', 'children'),

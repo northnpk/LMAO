@@ -1,3 +1,4 @@
+from pyexpat import _Model
 from .._utils import *
 from torch.nn import Linear
 import torch.nn.functional as F
@@ -10,21 +11,8 @@ class2bin = {'Normal':0,
              'Anomaly':1}
 bin2class = ['Normal', 'Anomaly']
 
-# embedding_size = 
-
 def class_trans(data, mode=class2bin):
     return mode[data]
-
-def fit(X, y, val_X:None, val_y:None):
-    group_node_attrs = list(map(lambda x: str(x), range(0, )))
-    train_df = pd.DataFrame({'X':X, 'y':y})
-    print('Transform y from label to binary.')
-    train_df['y'] = train_df['y'].progress_apply(class_trans, mode=class2bin)
-    train_loader = getting_loader(df=train_df)
-    if val_X or val_y :
-        val_df = pd.DataFrame({'X':val_X, 'y':val_y})
-
-        
      
 class Model:
     def __init__(self, n_feature):
@@ -78,3 +66,16 @@ class GCN(torch.nn.Module):
         x = self.lin(x)
         
         return x
+    
+    
+clf = Model(n_feature=386)
+
+def fit(model, X, y, val_X:None, val_y:None):
+    group_node_attrs = model.group_node_attrs
+    embeddings = model.embeddings
+    train_df = pd.DataFrame({'X':X, 'y':y})
+    print('Transform y from label to binary.')
+    train_df['y'] = train_df['y'].progress_apply(class_trans, mode=class2bin)
+    train_loader = getting_loader(df=train_df)
+    if val_X or val_y :
+        val_df = pd.DataFrame({'X':val_X, 'y':val_y})

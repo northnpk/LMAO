@@ -18,9 +18,8 @@ label_map = {
 }
 
 class LMAOClassifier:
-    def __init__(self, model_type:str='lgbm'):
+    def __init__(self, model_type:str='lgbm', embeddings=None, n_features:int=384):
         super().__init__()
-        self.model = None
         self.model = model_map[model_type]
         self.label = label_map[model_type]
         self.model_type = model_type
