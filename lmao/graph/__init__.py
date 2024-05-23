@@ -66,10 +66,10 @@ class LMAOGraph:
             n_features += embeddings.shape[1]
         group_node_attrs = list(map(lambda x: str(x), range(0, n_features)))
         print('Getting PyG Loader Graph from dataframe')
-        return getting_loader(df=self.df[self.df['usage'=='train']],
+        return getting_loader(df=self.df[self.df['usage']=='train'],
                               group_node_attrs=group_node_attrs,
                               embeddings=embeddings,
-                              batch_size=batch_size),getting_loader(df=self.df[self.df['usage'=='test']],
+                              batch_size=batch_size),getting_loader(df=self.df[self.df['usage']=='test'],
                                                                     group_node_attrs=group_node_attrs,
                                                                     embeddings=embeddings,
                                                                     batch_size=batch_size)
