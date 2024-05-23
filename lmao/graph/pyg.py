@@ -41,7 +41,7 @@ def get_graph(seq, embeddings=None):
     data = np.array(list(c.items()))
     x = get_freq(data, data_size)
         
-    if type(embeddings) != None:
+    if embeddings != None:
         x = np.hstack([x, get_embeddings(data, embeddings)])
     else:
         x = data
