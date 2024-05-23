@@ -62,7 +62,7 @@ class LMAOGraph:
         n_features = 2
         # if one_hot:
         #     n_features+=self.seq_size
-        if embeddings != None:
+        if type(embeddings) != type(None):
             n_features += embeddings.shape[1]
         group_node_attrs = list(map(lambda x: str(x), range(0, n_features)))
         print('Getting PyG Loader Graph from dataframe')
